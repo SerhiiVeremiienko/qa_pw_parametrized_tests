@@ -107,12 +107,6 @@ export class CartPage {
     await expect(this.notCoffeeMessage).toBeVisible();
   }
 
-  async assertCheckoutContainsText(totalText) {
-    await test.step(`Check Total price`, async () => {
-      await expect(this.checkoutPrice).toContainText(`Total: $${totalText}`);
-    });
-  }
-
   async assertTotalCheckoutContainsValue(value) {
     await expect(this.totalCheckout).toContainText(value);
   }

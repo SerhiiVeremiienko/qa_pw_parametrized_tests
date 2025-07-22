@@ -3,7 +3,7 @@ export function unitPriceFormatStr(unitPrice, unitsNumber = 1) {
 }
 
 export function priceFormatStr(unitPrice, unitsNumber = 1) {
-  return (unitPrice * unitsNumber).toFixed(2);
+  return `$${(unitPrice * unitsNumber).toFixed(2)}`;
 }
 
 export function totalPriceFormatStr(unitPrice) {

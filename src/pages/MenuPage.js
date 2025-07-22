@@ -3,15 +3,6 @@ const { expect, test } = require('@playwright/test');
 export class MenuPage {
   constructor(page) {
     this.page = page;
-    this.cappuccinoCup = page.getByTestId('Cappuccino');
-    this.cappuccinoCupCost = page
-      .getByRole('listitem')
-      .filter({ has: this.cappuccinoCup });
-    this.espressoCup = page.getByTestId('Espresso');
-    this.espressoCupCost = page
-      .getByRole('listitem')
-      .filter({ has: this.espressoCup });
-    this.americanoCup = page.getByTestId('Americano');
     this.cartLink = page.getByLabel('Cart page');
     this.totalCheckout = page.getByTestId('checkout');
     this.promoMessage = page.getByText(
