@@ -39,7 +39,7 @@ test('Assert discounted Mocha added to the Cart after promo accepting', async ({
 
   await test.step('Check prices for each and total', async () => {
     let expectedTotal = 0;
-    coffeeSet.push(COFFEE_DISCOUNT);
+    coffeeSet.push(COFFEE_DISCOUNT.discountedMocha);
 
     for (const { coffee, price } of coffeeSet) {
       const totalPriceStr = priceFormatStr(price);

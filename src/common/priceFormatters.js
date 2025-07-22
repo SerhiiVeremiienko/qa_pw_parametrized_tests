@@ -1,11 +1,11 @@
 export function unitPriceFormatStr(unitPrice, unitsNumber = 1) {
-  return `${unitPrice}.00 x ${unitsNumber}`;
+  return `$${unitPrice.toFixed(2)} x ${unitsNumber}`;
 }
 
 export function priceFormatStr(unitPrice, unitsNumber = 1) {
-  return `${unitPrice * unitsNumber}.00`;
+  return (unitPrice * unitsNumber).toFixed(2);
 }
 
 export function totalPriceFormatStr(unitPrice) {
-  return `Total: $${unitPrice}.00`;
+  return `Total: $${unitPrice.toFixed(2)}`;
 }

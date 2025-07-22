@@ -48,7 +48,9 @@ test('Assert cart updated correctly after clicking plus for drinks', async ({
         totalPriceStr,
       );
     }
-    await cartPage.assertCoffeeIsNotVisible(COFFEE_DISCOUNT.coffee);
+    await cartPage.assertCoffeeIsNotVisible(
+      COFFEE_DISCOUNT.discountedMocha.coffee,
+    );
     const expectedTotalStr = totalPriceFormatStr(expectedTotal * multiplier);
     await menuPage.assertTotalCheckoutContainsValue(expectedTotalStr);
   });

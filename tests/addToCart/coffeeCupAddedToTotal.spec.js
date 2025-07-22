@@ -45,7 +45,9 @@ test('Check each and total after adding all coffees', async ({
         totalPriceStr,
       );
     }
-    await cartPage.assertCoffeeIsNotVisible(COFFEE_DISCOUNT.coffee);
+    await cartPage.assertCoffeeIsNotVisible(
+      COFFEE_DISCOUNT.discountedMocha.coffee,
+    );
     const expectedTotalStr = totalPriceFormatStr(expectedTotal);
     await menuPage.assertTotalCheckoutContainsValue(expectedTotalStr);
   });

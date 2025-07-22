@@ -52,7 +52,9 @@ test('Assert discounted Mocha is missed after promo declining', async ({
         totalPriceStr,
       );
     }
-    await cartPage.assertCoffeeIsNotVisible(COFFEE_DISCOUNT.coffee);
+    await cartPage.assertCoffeeIsNotVisible(
+      COFFEE_DISCOUNT.discountedMocha.coffee,
+    );
     const expectedTotalStr = totalPriceFormatStr(expectedTotal);
     await menuPage.assertTotalCheckoutContainsValue(expectedTotalStr);
   });
