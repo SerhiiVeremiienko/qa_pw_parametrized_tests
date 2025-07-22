@@ -1,20 +1,34 @@
 import { test } from '../_fixtures/fixtures';
-import { priceFormatStr } from '../../src/common/priceFormatters';
-import { COFFEE_PRICES } from '../../src/constants';
+import {
+  unitPriceFormatStr,
+  priceFormatStr,
+  totalPriceFormatStr,
+} from '../../src/common/priceFormatters';
+import {
+  COFFEE_NAMES,
+  COFFEE_PRICES,
+  COFFEE_DISCOUNT,
+} from '../../src/constants';
+
+const selectedCoffees = ['espresso', 'cappuccino', 'americano'];
+const coffeeSet = [];
+
+for (const [key, value] of Object.entries(COFFEE_NAMES)) {
+  if (selectedCoffees.includes(value.toLowerCase())) {
+    coffeeSet.push({ coffee: value, price: COFFEE_PRICES[key] });
+  }
+}
 
 test('Assert discounted Mocha added to the Cart after promo accepting', async ({
   cartPage,
   menuPage,
 }) => {
-  const espressoPrice = priceFormatStr(COFFEE_PRICES.espresso);
-  const discMochaPrice = priceFormatStr(COFFEE_PRICES.discountedMocha);
-  const cappuccinoPrice = priceFormatStr(COFFEE_PRICES.cappuccino);
-  const americanoPrice = priceFormatStr(COFFEE_PRICES.americano);
-
   await menuPage.open();
-  await menuPage.clickCappucinoCup();
-  await menuPage.clickEspressoCup();
-  await menuPage.clickAmericanoCup();
+  await test.step('Add 3 coffee to order', async () => {
+    for (const { coffee } of coffeeSet) {
+      await menuPage.clickCoffeeCup(coffee);
+    }
+  });
 
   await menuPage.assertPromoMessageIsVisible();
 
@@ -23,10 +37,24 @@ test('Assert discounted Mocha added to the Cart after promo accepting', async ({
   await menuPage.clickCartLink();
   await cartPage.waitForLoading();
 
-  await cartPage.assertEspressoTotalCostContainsCorrectText(espressoPrice);
-  await cartPage.assertDiscountedMochaTotalCostContainsCorrectText(
-    discMochaPrice,
-  );
-  await cartPage.assertCappuccinoTotalCostContainsCorrectText(cappuccinoPrice);
-  await cartPage.assertAmericanoTotalCostContainsCorrectText(americanoPrice);
+  await test.step('Check prices for each and total', async () => {
+    let expectedTotal = 0;
+    coffeeSet.push(COFFEE_DISCOUNT);
+
+    for (const { coffee, price } of coffeeSet) {
+      const totalPriceStr = priceFormatStr(price);
+      const unitPriceStr = unitPriceFormatStr(price, 1);
+      expectedTotal += price;
+
+      await cartPage.assertCoffeeNameContainsCorrectText(coffee);
+      await cartPage.assertCoffeeUnitContainsCorrectText(coffee, unitPriceStr);
+      await cartPage.assertCoffeeTotalCostContainsCorrectText(
+        coffee,
+        totalPriceStr,
+      );
+    }
+
+    const expectedTotalStr = totalPriceFormatStr(expectedTotal);
+    await menuPage.assertTotalCheckoutContainsValue(expectedTotalStr);
+  });
 });

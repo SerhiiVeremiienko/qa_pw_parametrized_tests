@@ -10,29 +10,22 @@ import {
   COFFEE_DISCOUNT,
 } from '../../src/constants';
 
-const selectedCoffees = ['espresso', 'cappuccino', 'americano'];
 const coffeeSet = [];
 
 for (const [key, value] of Object.entries(COFFEE_NAMES)) {
-  if (selectedCoffees.includes(value.toLowerCase())) {
-    coffeeSet.push({ coffee: value, price: COFFEE_PRICES[key] });
-  }
+  coffeeSet.push({ coffee: value, price: COFFEE_PRICES[key] });
 }
 
-test('Assert discounted Mocha is missed after promo declining', async ({
+test('Check each and total after adding all coffees', async ({
   cartPage,
   menuPage,
 }) => {
   await menuPage.open();
-  await test.step('Add 3 coffee to order', async () => {
+  await test.step(`Add ${coffeeSet.length} coffee to order`, async () => {
     for (const { coffee } of coffeeSet) {
       await menuPage.clickCoffeeCup(coffee);
     }
   });
-
-  await menuPage.assertPromoMessageIsVisible();
-
-  await menuPage.clickNoPromoButton();
 
   await menuPage.clickCartLink();
   await cartPage.waitForLoading();

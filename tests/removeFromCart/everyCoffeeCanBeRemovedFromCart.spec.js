@@ -8,7 +8,7 @@ for (const [key, value] of Object.entries(COFFEE_NAMES)) {
 }
 
 testParameters.forEach(({ coffee }) => {
-  test(`Cart updated correctly after clicking minus ${coffee} button`, async ({
+  test(`Check ${coffee} correctly added to the Cart`, async ({
     menuPage,
     cartPage,
   }) => {
@@ -18,7 +18,7 @@ testParameters.forEach(({ coffee }) => {
     await menuPage.clickCartLink();
     await cartPage.waitForLoading();
 
-    await cartPage.clickRemoveOneCoffeeButton(coffee);
+    await cartPage.clickRemoveAllCoffeeButton(coffee);
     await cartPage.assertNoCoffeeMessageIsVisible();
   });
 });

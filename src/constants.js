@@ -22,3 +22,8 @@ export const COFFEE_PRICES = {
   espressoConPanna: 14,
   cafeBreve: 15,
 };
+
+export const COFFEE_DISCOUNT = {
+  coffee: '(Discounted) Mocha',
+  price: 4,
+};

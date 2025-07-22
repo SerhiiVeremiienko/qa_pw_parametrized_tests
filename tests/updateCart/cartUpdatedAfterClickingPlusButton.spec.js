@@ -1,41 +1,55 @@
 import { test } from '../_fixtures/fixtures';
-import { priceFormatStr } from '../../src/common/priceFormatters';
-import { COFFEE_PRICES } from '../../src/constants';
+import {
+  unitPriceFormatStr,
+  priceFormatStr,
+  totalPriceFormatStr,
+} from '../../src/common/priceFormatters';
+import {
+  COFFEE_NAMES,
+  COFFEE_PRICES,
+  COFFEE_DISCOUNT,
+} from '../../src/constants';
+
+const multiplier = 2;
+const coffeeSet = [];
+for (const [key, value] of Object.entries(COFFEE_NAMES)) {
+  coffeeSet.push({ coffee: value, price: COFFEE_PRICES[key] });
+}
 
 test('Assert cart updated correctly after clicking plus for drinks', async ({
   cartPage,
   menuPage,
 }) => {
-  const oneCappuccinoPrice = priceFormatStr(COFFEE_PRICES.cappuccino);
-  const twoCappuccinoPrice = priceFormatStr(COFFEE_PRICES.cappuccino * 2);
-  const oneEspressoPrice = priceFormatStr(COFFEE_PRICES.espresso);
-  const twoEspressoPrice = priceFormatStr(COFFEE_PRICES.espresso * 2);
-  const totalPriceNum =
-    COFFEE_PRICES.cappuccino * 2 + COFFEE_PRICES.espresso * 2;
-  const totalPrice = priceFormatStr(totalPriceNum);
-
   await menuPage.open();
-  await menuPage.clickCappucinoCup();
-  await menuPage.clickEspressoCup();
+  await test.step(`Add ${coffeeSet.length} coffee to order`, async () => {
+    for (const { coffee } of coffeeSet) {
+      await menuPage.clickCoffeeCup(coffee);
+    }
+  });
 
   await menuPage.clickCartLink();
   await cartPage.waitForLoading();
 
-  await cartPage.assertEspressoTotalCostContainsCorrectText(oneEspressoPrice);
+  await test.step('Check prices for each and total', async () => {
+    let expectedTotal = 0;
 
-  await cartPage.clickAddOneEspressoButton();
+    for (const { coffee, price } of coffeeSet) {
+      await cartPage.clickAddOneCoffeeButton(coffee);
 
-  await cartPage.assertEspressoTotalCostContainsCorrectText(twoEspressoPrice);
-  await cartPage.assertCappuccinoTotalCostContainsCorrectText(
-    oneCappuccinoPrice,
-  );
+      const totalPriceStr = priceFormatStr(price, multiplier);
+      const unitPriceStr = unitPriceFormatStr(price, multiplier);
 
-  await cartPage.clickAddOneCappuccinoButton();
+      expectedTotal += price;
 
-  await cartPage.assertCappuccinoTotalCostContainsCorrectText(
-    twoCappuccinoPrice,
-  );
-  await cartPage.assertEspressoTotalCostContainsCorrectText(twoEspressoPrice);
-
-  await cartPage.assertTotalCheckoutContainsValue(totalPrice);
+      await cartPage.assertCoffeeNameContainsCorrectText(coffee);
+      await cartPage.assertCoffeeUnitContainsCorrectText(coffee, unitPriceStr);
+      await cartPage.assertCoffeeTotalCostContainsCorrectText(
+        coffee,
+        totalPriceStr,
+      );
+    }
+    await cartPage.assertCoffeeIsNotVisible(COFFEE_DISCOUNT.coffee);
+    const expectedTotalStr = totalPriceFormatStr(expectedTotal * multiplier);
+    await menuPage.assertTotalCheckoutContainsValue(expectedTotalStr);
+  });
 });

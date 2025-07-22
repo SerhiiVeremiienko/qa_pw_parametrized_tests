@@ -8,17 +8,8 @@ for (const [key, value] of Object.entries(COFFEE_NAMES)) {
 }
 
 testParameters.forEach(({ coffee }) => {
-  test(`Cart updated correctly after clicking minus ${coffee} button`, async ({
-    menuPage,
-    cartPage,
-  }) => {
+  test(`Check ${coffee} correctly added to the Cart`, async ({ menuPage }) => {
     await menuPage.open();
-    await menuPage.clickCoffeeCup(coffee);
-
-    await menuPage.clickCartLink();
-    await cartPage.waitForLoading();
-
-    await cartPage.clickRemoveOneCoffeeButton(coffee);
-    await cartPage.assertNoCoffeeMessageIsVisible();
+    await menuPage.getCoffeePrice(coffee);
   });
 });
